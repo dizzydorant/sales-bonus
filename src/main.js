@@ -53,15 +53,27 @@ function calculateBonusByProfit(index, total, seller) {
  */
 function analyzeSalesData(data, options) {
   // @TODO: Проверка входных данных
-  if (!data || !Array.isArray(data.sellers) || data.sellers.length === 0 || !data.purchase_records || data.purchase_records.length === 0) {
+  if (
+    !data ||
+    !Array.isArray(data.sellers) ||
+    data.sellers.length === 0 ||
+    !data.purchase_records ||
+    data.purchase_records.length === 0
+  ) {
     throw new Error("Некорректные входные данные");
   }
   // @TODO: Проверка наличия опций
 
-if ( typeof options.calculateRevenue !== "function" && typeof options.calculateBonus !== "function" && typeof options !== "object" && options == null) {
-    console.error("ошибка")
-}
-const { calculateRevenue, calculateBonus } = options;
+  if (
+    !options &&
+    typeof options.calculateRevenue !== "function" &&
+    typeof options.calculateBonus !== "function"
+  ) {
+    console.error("ошибка");
+
+    return;
+  }
+  const { calculateRevenue, calculateBonus } = options;
   // @TODO: Подготовка промежуточных данных для сбора статистики
 
   const sellerStats = data.sellers.map((seller) => ({
@@ -116,7 +128,6 @@ const { calculateRevenue, calculateBonus } = options;
   const totalSellers = sellerStats.length;
 
   sellerStats.forEach((seller, index) => {
-
     seller.bonus = calculateBonus(index, totalSellers, seller);
     seller.top_products = Object.entries(seller.products_sold)
       .map(([sku, quantity]) => ({ sku, quantity }))
@@ -128,10 +139,10 @@ const { calculateRevenue, calculateBonus } = options;
   return sellerStats.map((seller) => ({
     seller_id: seller.id,
     name: seller.name,
-    revenue: +seller.revenue.toFixed(2),
-    profit: +seller.profit.toFixed(2),
+    revenue: Number(seller.revenue.toFixed(2)),
+    profit: Number(seller.profit.toFixed(2)),
     sales_count: seller.sales_count,
     top_products: seller.top_products,
-    bonus: +seller.bonus.toFixed(2),
+    bonus: Number(seller.bonus.toFixed(2)),
   }));
 }
