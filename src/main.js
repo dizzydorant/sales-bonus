@@ -53,7 +53,7 @@ function calculateBonusByProfit(index, total, seller) {
  */
 function analyzeSalesData(data, options) {
   // @TODO: Проверка входных данных
-  if (!data || !Array.isArray(data.sellers) || data.sellers.length === 0) {
+  if (!data || !Array.isArray(data.sellers) || data.sellers.length === 0 || !data.purchase_records || data.purchase_records.length === 0) {
     throw new Error("Некорректные входные данные");
   }
   // @TODO: Проверка наличия опций
