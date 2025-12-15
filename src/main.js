@@ -57,18 +57,11 @@ function analyzeSalesData(data, options) {
     throw new Error("Некорректные входные данные");
   }
   // @TODO: Проверка наличия опций
-  let calculateRevenue = calculateSimpleRevenue;
-  let calculateBonus = calculateBonusByProfit;
-  if (
-    typeof options === "object" &&
-    options !== null &&
-    typeof options.calculateRevenue === "function" &&
-    typeof options.calculateBonus === "function"
-  ) {
-    const { calculateRevenue, calculateBonus } = options;
-  } else {
-    console.error("Не удалось загрузить обязательные функции из options.");
-  }
+
+if ( typeof options.calculateRevenue !== "function" && typeof options.calculateBonus !== "function" && typeof options !== "object" && options == null) {
+    console.error("ошибка")
+}
+const { calculateRevenue, calculateBonus } = options;
   // @TODO: Подготовка промежуточных данных для сбора статистики
 
   const sellerStats = data.sellers.map((seller) => ({
@@ -123,7 +116,7 @@ function analyzeSalesData(data, options) {
   const totalSellers = sellerStats.length;
 
   sellerStats.forEach((seller, index) => {
-    // Назначение бонуса
+
     seller.bonus = calculateBonus(index, totalSellers, seller);
     seller.top_products = Object.entries(seller.products_sold)
       .map(([sku, quantity]) => ({ sku, quantity }))
